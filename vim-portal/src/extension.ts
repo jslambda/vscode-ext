@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const disposable = vscode.commands.registerCommand('hellohamidid.helloWorld', () => {
+	const disposable = vscode.commands.registerCommand('vimportalid.vimportal', () => {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
 			const document = editor.document;
