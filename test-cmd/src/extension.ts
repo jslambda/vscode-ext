@@ -60,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.showInformationMessage(`${qualifiedName}`);
 				// Show cmd in a terminal without executing it
 				const cmd = `python -m test test ${path.basename(fileName)}.${qualifiedName}`
-				const terminalName = 'Tes Command Terminal';
+				const terminalName = 'GenerateTest Command Terminal';
 				let terminal = vscode.window.terminals.find(t => t.name === terminalName);
 				if (!terminal) {
 					terminal = vscode.window.createTerminal(terminalName);
