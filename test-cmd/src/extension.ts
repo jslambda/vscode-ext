@@ -44,7 +44,7 @@ function findInnermostSymbolChain(
 
 export function activate(context: vscode.ExtensionContext) {
 
-	const disposable = vscode.commands.registerCommand('vimportalid.vimportal', () => {
+	const disposable = vscode.commands.registerCommand("testcmdid.testcmd", () => {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
 			const document = editor.document;
