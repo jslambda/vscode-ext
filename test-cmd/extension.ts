@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import path from 'path';
 
 async function getQualifiedName(
 	document: vscode.TextDocument,
@@ -46,33 +47,29 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposable = vscode.commands.registerCommand('vimportalid.vimportal', () => {
 		const editor = vscode.window.activeTextEditor;
 		if (editor) {
-
 			const document = editor.document;
-			if (document.languageId === 'python' || true) {
-				const fileName = document.fileName;
-				const cursorPosition = editor.selection.active;
+			const fileName = document.fileName;
+			const cursorPosition = editor.selection.active;
 
-				// Get the qualified name name
-				const qualifiedNamePromise = getQualifiedName(document, cursorPosition);
-				qualifiedNamePromise.then((qualifiedName) => {
-					if (qualifiedName == undefined) {
-						return;
-					}
-					vscode.window.showInformationMessage(`${qualifiedName}`);
-					// Show cmd in a terminal without executing it
-					const cmd = `echo "python -m test test ${qualifiedName}"`
-					const terminalName = 'Tes Command Terminal';
-					let terminal = vscode.window.terminals.find(t => t.name === terminalName);
-					if (!terminal) {
-						terminal = vscode.window.createTerminal(terminalName);
-					}
-					terminal.show();
-					terminal.sendText(cmd, false);
-				}).catch((error) => {
-					vscode.window.showInformationMessage(error);
-				})
-
-			}
+			// Get the qualified name name
+			const qualifiedNamePromise = getQualifiedName(document, cursorPosition);
+			qualifiedNamePromise.then((qualifiedName) => {
+				if (qualifiedName == undefined) {
+					return;
+				}
+				vscode.window.showInformationMessage(`${qualifiedName}`);
+				// Show cmd in a terminal without executing it
+				const cmd = `python -m test test ${path.basename(fileName)}.${qualifiedName}`
+				const terminalName = 'Tes Command Terminal';
+				let terminal = vscode.window.terminals.find(t => t.name === terminalName);
+				if (!terminal) {
+					terminal = vscode.window.createTerminal(terminalName);
+				}
+				terminal.show();
+				terminal.sendText(cmd, false);
+			}).catch((error) => {
+				vscode.window.showInformationMessage(error);
+			})
 		}
 	});
 
