@@ -1,6 +1,22 @@
 import * as vscode from 'vscode';
 import path from 'path';
 
+function getIndexOfLastFunctionSymbol(symbolChain: vscode.DocumentSymbol[]): number {
+	let indexOfLastFunction = 0;
+	for (let index = 0; index < symbolChain.length; index++) {
+		const symbol = symbolChain[index];
+		const symbolIsFunc = (symbol.kind === vscode.SymbolKind.Method || symbol.kind === vscode.SymbolKind.Function);
+		if (symbolIsFunc) {
+			indexOfLastFunction = index;
+		}
+	}	
+	if (indexOfLastFunction != 0) {
+		return indexOfLastFunction;
+	}
+	// No function in the chain. Falling back to the index of the last element in the chain.
+	return symbolChain.length - 1;
+}
+
 async function getQualifiedName(
 	document: vscode.TextDocument,
 	position: vscode.Position
@@ -15,8 +31,9 @@ async function getQualifiedName(
 		// Find the innermost symbol that contains the position
 		const symbolChain = findInnermostSymbolChain(symbols, position);
 		if (symbolChain.length > 0) {
-			// Build the qualified name
-			const names = symbolChain.map((s) => s.name);
+			const indexOfFunc = getIndexOfLastFunctionSymbol(symbolChain);
+			// Build the qualified name up to the last function in the chain
+			const names = symbolChain.slice(0, indexOfFunc+1).map((s) => s.name);
 			return names.join('.');
 		}
 	}
