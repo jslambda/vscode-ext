@@ -59,6 +59,22 @@ function findInnermostSymbolChain(
 	return chain;
 }
 
+function removeFileExtension(fullFileName: string): string {
+	const result: string[] = [];
+	let lastDotSeen = false;
+	for (let i = fullFileName.length - 1; i >= 0; i--) {
+		const c = fullFileName[i];
+		if (lastDotSeen) {
+			result.push(c);
+		} else {
+			if (c == '.') {
+				lastDotSeen = true;
+			}
+		}
+	}
+	return result.toReversed().join('');
+}
+
 export function activate(context: vscode.ExtensionContext) {
 
 	const disposable = vscode.commands.registerCommand("testcmdid.testcmd", () => {
@@ -75,8 +91,9 @@ export function activate(context: vscode.ExtensionContext) {
 					return;
 				}
 				vscode.window.showInformationMessage(`${qualifiedName}`);
+				const fullFileNameWithoutExt = removeFileExtension(path.basename(fileName));
 				// Show cmd in a terminal without executing it
-				const cmd = `python -m test test ${path.basename(fileName)}.${qualifiedName}`
+				const cmd = `python -m unittest test ${fullFileNameWithoutExt}.${qualifiedName}`
 				const terminalName = 'GenerateTest Command Terminal';
 				let terminal = vscode.window.terminals.find(t => t.name === terminalName);
 				if (!terminal) {
